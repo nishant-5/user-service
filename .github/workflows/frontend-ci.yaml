@@ -51,7 +51,9 @@ jobs:
         run: |
           docker build \
             -t ${{ secrets.DOCKERHUB_USERNAME }}/taskpad-frontend:${{ steps.image.outputs.tag }} \
-            .
+      
+      - name: Install yq
+        uses: mikefarah/yq@v4
 
       - name: Push Docker image
         run: |
@@ -67,7 +69,7 @@ jobs:
           
               cd gitops
           
-              sed -i '/^frontend:/,/^backend:/ s/^\(\s*tag:\s*\).*/\1'${IMAGE_TAG}'/' envs/dev/values.yaml
+              yq -i '.frontend.image.tag = strenv(IMAGE_TAG)' envs/dev/values.yaml
           
               git config user.name "github-actions[bot]"
               git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
