@@ -59,7 +59,7 @@ export default function AddTaskModal({
               onChange={(e) => setStatus(e.target.value)}
               className="w-full border rounded-lg p-3"
             >
-              <option value="NEW">NEW</option>
+              <option value="NEW UPDATE">NEW</option>
               <option value="IN_PROGRESS">IN_PROGRESS</option>
               <option value="DONE">DONE</option>
             </select>
