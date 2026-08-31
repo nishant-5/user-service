@@ -69,12 +69,12 @@ jobs:
       - name: Push Docker image
         run: |
           docker push \
-            ${{ secrets.DOCKERHUB_USERNAME }}/taskpad-frontend:${{ steps.build.outputs.number }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/taskpad-frontend:dev-${{ steps.build.outputs.number }}
 
       - name: Update GitOps repository
         env:
           GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
-          IMAGE_TAG: ${{ steps.build.outputs.number }}
+          IMAGE_TAG: dev-${{ steps.build.outputs.number }}
         run: |
           git clone https://x-access-token:${GITOPS_TOKEN}@github.com/nishant-5/gitops.git gitops
 
