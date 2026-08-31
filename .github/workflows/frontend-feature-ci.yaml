@@ -52,3 +52,17 @@ jobs:
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh pr view "${GITHUB_REF_NAME}" --base dev >/dev/null 2>&1; then
+            echo "Pull request already exists."
+          else
+            gh pr create \
+              --base DEV \
+              --head "${GITHUB_REF_NAME}" \
+              --title "Merge ${GITHUB_REF_NAME} into dev" \
+              --body "Automatically created after successful Feature CI and SonarQube Quality Gate."
+          fi  
