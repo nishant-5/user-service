@@ -3,7 +3,7 @@ import {
     FaTrash,
     FaCog,
   } from "react-icons/fa";
-  const currentEnv = "PROD";
+  const currentEnv = "DEV";
   export default function Sidebar({
     deletedTasks,
     completedTasks,
@@ -29,12 +29,12 @@ import {
 
 <span
   className={`rounded-full px-3 py-1 text-xs font-semibold ${
-    currentEnv === "PROD"
+    currentEnv === "DEV"
       ? "bg-red-600"
       : "bg-gray-700"
   }`}
 >
-  PROD
+  DEV
 </span>
 
 </div>
