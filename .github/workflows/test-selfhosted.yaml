@@ -1,0 +1,16 @@
+name: Test Self Hosted Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: [self-hosted, linux, x64]
+
+    steps:
+      - name: Test runner
+        run: |
+          echo "Hello from my laptop"
+          hostname
+          uname -a
+          docker --version

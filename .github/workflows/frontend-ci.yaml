@@ -30,6 +30,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set build number
+        id: build
+        run: echo "number=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -56,7 +60,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/taskpad-frontend:${{ steps.image.outputs.tag }} \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/taskpad-frontend:dev-${{ steps.build.outputs.number }} \
             .
 
       - name: Install yq
@@ -65,12 +69,12 @@ jobs:
       - name: Push Docker image
         run: |
           docker push \
-            ${{ secrets.DOCKERHUB_USERNAME }}/taskpad-frontend:${{ steps.image.outputs.tag }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/taskpad-frontend:dev-${{ steps.build.outputs.number }}
 
       - name: Update GitOps repository
         env:
           GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
-          IMAGE_TAG: ${{ steps.image.outputs.tag }}
+          IMAGE_TAG: dev-${{ steps.build.outputs.number }}
         run: |
           git clone https://x-access-token:${GITOPS_TOKEN}@github.com/nishant-5/gitops.git gitops
 
