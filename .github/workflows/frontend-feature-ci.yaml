@@ -9,6 +9,11 @@ on:
     branches:
       - dev
 
+permissions:
+  contents: read
+  pull-requests: write
+      
+
 jobs:
   frontend-quality:
     runs-on: [self-hosted, linux, x64]
@@ -39,12 +44,30 @@ jobs:
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        with:
+          projectBaseDir: frontend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
 
       - name: SonarQube Quality Gate
+        with:
+          scanMetadataReportFile: frontend/.scannerwork/report-task.txt
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh pr view "${GITHUB_REF_NAME}" --base dev >/dev/null 2>&1; then
+            echo "Pull request already exists."
+          else
+            gh pr create \
+              --base DEV \
+              --head "${GITHUB_REF_NAME}" \
+              --title "Merge ${GITHUB_REF_NAME} into dev" \
+              --body "Automatically created after successful Feature CI and SonarQube Quality Gate."
+          fi  
