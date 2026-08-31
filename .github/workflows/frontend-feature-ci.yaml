@@ -46,6 +46,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
 
       - name: SonarQube Quality Gate
+        with:
+          projectBaseDir: frontend
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 5
         env:
